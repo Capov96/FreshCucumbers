@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class Application {
 
   public static void main(String[] args) {
-    System.out.println(System.getenv("CLEARDB_DATABASE_URL"));
     SpringApplication.run(Application.class, args);
   }
 
