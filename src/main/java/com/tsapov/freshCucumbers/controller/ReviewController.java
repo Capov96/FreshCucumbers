@@ -9,8 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 
 @Controller
@@ -37,10 +40,14 @@ public class ReviewController {
 
   @PostMapping("/view")
   public String check(@AuthenticationPrincipal User user,
-                      @RequestParam(value = "tags[]") String[] tags,
+                      @RequestParam(required = false, value = "tags[]") String[] tags,
                       @RequestParam("previewFile") MultipartFile previewImage,
-                      @RequestParam("images[]") MultipartFile[] images,
+                      @RequestParam(required = false, value = "images") MultipartFile[] images,
                       @ModelAttribute Review review, Model model) throws IOException {
+    System.out.println(images.length);
+    for (MultipartFile file : images) {
+      System.out.println(file.getOriginalFilename());
+    }
     reviewService.getReview(user, previewImage, images, review, model);
     return "reviewCheck";
   }

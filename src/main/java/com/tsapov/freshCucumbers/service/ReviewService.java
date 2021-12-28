@@ -76,7 +76,7 @@ public class ReviewService {
     String htmlContent = htmlService.markdownToHtml(review.getText());
     review.setAuthor(user);
     setPreviewImage(review, previewImage);
-    addImages(review, images);
+    //addImages(review, images);
     model.addAttribute("htmlContent", htmlContent);
     model.addAttribute("review", review);
     model.addAttribute("user", user);

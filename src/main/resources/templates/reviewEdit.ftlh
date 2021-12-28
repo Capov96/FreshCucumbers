@@ -1,10 +1,14 @@
 <#import "parts/common.ftlh" as c>
-
+<head>
+    <link rel="stylesheet" href="/static/images_drop_area.css">
+    <link rel="stylesheet" href="/static/image_drop_area.css">
+</head>
 <@c.page>
 <body class="container">
-<h1>Convert Markdown to HTML</h1>
+<h1 id="title">Convert Markdown to HTML</h1>
 <form action="/view" method="post" enctype="multipart/form-data">
-    <fieldset>
+<#--    <fieldset>-->
+    <div class="bd-content ps-lg-4">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" id="title" name="title" value="${review.getTitle()?if_exists}"></input>
@@ -31,36 +35,34 @@
                 <textarea class="form-control" id="preview_text" name="preview_text" rows="3">${review.getPreview_text()?if_exists}</textarea>
             </div>
             <div class="col-auto">
-                <div class="card files" style="width: 18rem;" >
-                    <img class="card-img-top" id="thumbnail" alt="logoPreview" />
+                <div class="card files" style="width: 18rem;" id="thumbnail" >
                     <label>Upload Your File </label>
                     <input type="file" class="card-body" id="fileImage" name="previewFile">
                 </div>
             </div>
         </div>
+
         <div class="mb-3">
             <label for="text" class="form-label">Review text</label>
             <textarea class="form-control" id="text" name="text" rows="10">${review.getText()?if_exists}</textarea>
         </div>
 
-        <div class="col-auto">
-            <div class="card files" style="width: 18rem;" >
-                <img class="card-img-top" id="thumbnail_f1" alt="logoPreview" />
-                <label>Upload Your File </label>
-                <input type="file" class="card-body" id="f1" name="images[]">
-            </div>
-            <div class="card files" style="width: 18rem;" >
-                <img class="card-img-top" id="thumbnail_f2" alt="logoPreview" />
-                <label>Upload Your File </label>
-                <input type="file" class="card-body" id="f2" name="images[]">
-            </div>
-            <div class="card files" style="width: 18rem;" >
-                <img class="card-img-top" id="thumbnail_f3" alt="logoPreview" />
-                <label>Upload Your File </label>
-                <input type="file" class="card-body" id="f3" name="images[]">
-            </div>
+        <div id="drop-area">
+            <form class="my-form">
+                <div id="gallery"></div>
+                <p>Загрузите изображения с помощью диалога выбора файлов или перетащив нужные изображения в выделенную область</p>
+                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+                <label class="button" for="fileElem">Выбрать изображения</label>
+            </form>
         </div>
 
+        <div id="my-drop-area">
+            <div id="gallery"></div>
+            <p>Загрузите изображения с помощью диалога выбора файлов или перетащив нужные изображения в выделенную область</p>
+            <div class="files" style="width: 50%; align-items: center" id="thumbnail" >
+                <input type="file" class="card-body" id="fileImage" name="previewFile">
+            </div>
+        </div>
 
         <div class="container d-flex justify-content-center mt-10">
             <div class="row">
@@ -82,25 +84,11 @@
 
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <button type="submit" class="btn btn-primary">Submit</button>
-    </fieldset>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#fileImage').change(function () {
-                showImageThumbnail(this);
-            });
-            $('#f1').change(function () {
-                showImageThumbnail1(this);
-            });
-            $('#f2').change(function () {
-                showImageThumbnail2(this);
-            });
-            $('#f3').change(function () {
-                showImageThumbnail3(this);
-            });
-
+    </div>
+<#--    </fieldset>-->
+    <script>
             $("input[type='radio']").click(function(){
                 var sim = $("input[type='radio']:checked").val();
-                //alert(sim);
                 if (sim<3) {
                     $('.myratings').css('color','red');
                     $(".myratings").text(sim);
@@ -109,65 +97,11 @@
                     $(".myratings").text(sim);
                 }
             });
-        });
-
-        function showImageThumbnail(fileInput) {
-            let elementId = this.name;
-            file = fileInput.files[0];
-            reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#thumbnail').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-        function showImageThumbnail1(fileInput) {
-            let elementId = this.name;
-            file = fileInput.files[0];
-            reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#thumbnail_f1').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-        function showImageThumbnail2(fileInput) {
-            let elementId = this.name;
-            file = fileInput.files[0];
-            reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#thumbnail_f2').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-        function showImageThumbnail3(fileInput) {
-            let elementId = this.name;
-            file = fileInput.files[0];
-            reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#thumbnail_f3').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        let i = 0;
-        (document).getElementById('add-new-tag').onclick = function () {
-            let text = document.getElementById("tag").value;
-            let template =`
-                <span class="badge bg-primary"> #`+text+`</span>
-                <input type="hidden" name="tags[]" value="`+text+`" />
-                `;
-
-            let container = document.getElementById('tags-row');
-            let div = document.createElement('div');
-            div.className="col-auto"
-            div.innerHTML = template;
-            container.appendChild(div);
-            i++;
-        }
     </script>
+    <script src="js/image_drop.js"></script>
+    <script src="js/tag_form.js"></script>
+    <script src="js/preview_image_form.js"></script>
+
 </form>
 
 </body>
